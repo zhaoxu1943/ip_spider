@@ -1,44 +1,67 @@
 import csv
+import glob
+import os
 
 import jieba
+
+import excel
+
+# 来源目标路径
+directory = 'info/'
+# 获取目录下所有的CSV文件路径
+csv_files = glob.glob(os.path.join(directory, '*.csv'))
+
+output_directory = '../../output/company/'
 
 
 def cut(text):
     token_list = jieba.cut(text)
     # 加载停用词列表，包含标点符号
-    stopwords = ['，', '。', '！', '(', ')', '的', '与']
+    stopwords = ['，', '。', '！', '(', ')', '的', '与', '（', ' ', '）', '、', '；', '“', '”', '：', '《', '》', '？', '【', '】',
+                 '……', 'of', '-']
+    capital_cities = ["中国", "北京", "天津", "石家庄", "太原", "呼和浩特", "沈阳", "长春", "哈尔滨", "上海", "南京",
+                      "杭州",
+                      "合肥", "福州", "南昌",
+                      "济南", "郑州", "武汉", "长沙", "广州", "南宁", "海口", "重庆", "成都", "贵阳", "昆明", "拉萨",
+                      "西安", "兰州", "西宁",
+                      "银川", "乌鲁木齐", "台北", "香港", "澳门"]
+    stopwords.extend(capital_cities)
     # 去除停用词（标点符号）
     filtered_words = [word for word in token_list if word not in stopwords]
     return filtered_words
 
 
 if __name__ == '__main__':
-    # 公共通信
-    csv_file = 'info/公共通信.csv'  # CSV 文件路径
+    for csv_file in csv_files:
+        # 在这里进行对每个CSV文件的操作
+        print("处理文件:", csv_file)
 
-    # 创建一个空的字符串数组
-    tongxin = []
-    tongxin_tokens = []
+        # 创建一个空的字符串数组
+        tongxin = []
+        tongxin_tokens = []
 
-    with open(csv_file, 'r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            # 将每行数据作为字符串添加到数组中
-            tongxin.append(','.join(row))
+        with open(csv_file, 'r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                # 将每行数据作为字符串添加到数组中
+                tongxin.append(','.join(row))
 
-    # 打印字符串数组
-    for item in tongxin:
-        token_list = cut(item)
-        tongxin_tokens.extend(token_list)
+        # 打印字符串数组
+        for item in tongxin:
+            token_list = cut(item)
+            tongxin_tokens.extend(token_list)
 
-    for word in tongxin_tokens:
-        print(word)
+        tongxin_tokens = list(set(tongxin_tokens))
 
-    csv_file = '../../output/company/公共通信.csv'  # 输出的 CSV 文件路径
+        # 构建输出的CSV文件路径
+        output_csv_file = os.path.join(output_directory, os.path.basename(csv_file))
 
-    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        # 添加标记行
-        writer.writerow(['token'])
-        for word in tongxin_tokens:
-            writer.writerow([word])
+        with open(output_csv_file, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            # 添加标记行
+            writer.writerow(['token'])
+            for word in tongxin_tokens:
+                writer.writerow([word])
+
+        # 调用 excel.py 中的方法，将 CSV 文件转换为 Excel 文件
+        excel.convert_csv_to_excel(output_directory)
