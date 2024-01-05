@@ -31,7 +31,7 @@ def convert_csv_to_excel(directory):
         data = pd.concat([data, csv_data], ignore_index=True)
 
     # 创建 Excel 文件
-    output_path = os.path.join(directory, 'output.xlsx')
+    output_path = os.path.join(directory, '关键词.xlsx')
     writer = pd.ExcelWriter(output_path, engine='openpyxl')
 
     # 调换列的顺序
