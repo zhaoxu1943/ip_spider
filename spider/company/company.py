@@ -35,7 +35,8 @@ def cut(text):
     stopwords.extend(stop_words2)
     stopwords.extend(stop_words3)
     # 去除停用词（标点符号）
-    filtered_words = [word for word in token_list if word not in stopwords]
+    filtered_words = [word for word in token_list if
+                      word not in stopwords and len(word) >= 3 and not word.__contains__('公司')]
     return filtered_words
 
 
