@@ -15,7 +15,8 @@ output_directory = '../../output/company/'
 
 
 def cut(text):
-    token_list = jieba.cut(text)
+    # 使用精确模式对文本进行分词
+    token_list = jieba.cut(text, cut_all=False)
     # 加载停用词列表，包含标点符号
     stopwords = ['，', '。', '！', '(', ')', '的', '与', '（', ' ', '）', '、', '；', '“', '”', '：', '《', '》', '？', '【', '】',
                  '……', 'of', '-']
@@ -46,21 +47,22 @@ if __name__ == '__main__':
         print("处理文件:", csv_file)
 
         # 创建一个空的字符串数组
-        tongxin = []
-        tongxin_tokens = []
+        origin_company_names = []
+        cut_tokens = []
 
         with open(csv_file, 'r', encoding='utf-8') as file:
             reader = csv.reader(file)
             for row in reader:
                 # 将每行数据作为字符串添加到数组中
-                tongxin.append(','.join(row))
+                origin_company_names.append(','.join(row))
 
         # 打印字符串数组
-        for item in tongxin:
+        for item in origin_company_names:
             token_list = cut(item)
-            tongxin_tokens.extend(token_list)
+            cut_tokens.extend(token_list)
 
-        tongxin_tokens = list(set(tongxin_tokens))
+        # 每个文件去重
+        cut_tokens = list(set(cut_tokens))
 
         # 构建输出的CSV文件路径
         output_csv_file = os.path.join(output_directory, os.path.basename(csv_file))
@@ -69,7 +71,7 @@ if __name__ == '__main__':
             writer = csv.writer(file)
             # 添加标记行
             writer.writerow(['token'])
-            for word in tongxin_tokens:
+            for word in cut_tokens:
                 writer.writerow([word])
 
         # 调用 excel.py 中的方法，将 CSV 文件转换为 Excel 文件

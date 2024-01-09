@@ -1,7 +1,6 @@
 import os
+
 import pandas as pd
-from openpyxl import Workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.styles import Alignment
 
 # 定义列的顺序
@@ -29,6 +28,9 @@ def convert_csv_to_excel(directory):
         # 添加文件名和文件内容到 DataFrame
         csv_data['行业'] = file_name
         data = pd.concat([data, csv_data], ignore_index=True)
+
+    # 去除第二列的重复值
+    data = data.drop_duplicates(subset='token', keep='first')
 
     # 创建 Excel 文件
     output_path = os.path.join(directory, '关键词.xlsx')
