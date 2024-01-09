@@ -2,7 +2,7 @@ import csv
 import glob
 import os
 
-import jieba
+import jieba.posseg as pseg
 
 import excel
 
@@ -16,7 +16,7 @@ output_directory = '../../output/company/'
 
 def cut(text):
     # 使用精确模式对文本进行分词
-    token_list = jieba.cut(text, cut_all=False)
+    words = pseg.cut(text)
     # 加载停用词列表，包含标点符号
     stopwords = ['，', '。', '！', '(', ')', '的', '与', '（', ' ', '）', '、', '；', '“', '”', '：', '《', '》', '？', '【', '】',
                  '……', 'of', '-']
@@ -36,8 +36,16 @@ def cut(text):
     stopwords.extend(stop_words2)
     stopwords.extend(stop_words3)
     # 去除停用词（标点符号）
-    filtered_words = [word for word in token_list if
-                      word not in stopwords and len(word) >= 3 and not word.__contains__('公司')]
+    filtered_words = [word for word, flag in words if
+                      word not in stopwords and len(word) >= 3
+                      and not word.__contains__('公司')
+                      and not word.__contains__('性')
+                      and not word.__contains__('化')
+                      and flag != 'a'
+                      and flag != 'ad'
+                      and flag != 'an'
+                      and flag != 'ag'
+                      and flag != 'al']
     return filtered_words
 
 
