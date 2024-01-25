@@ -53,7 +53,7 @@ def process():
             content += "\n"
             content += "所属行业枚举必须是数组其中之一[" + ', '.join(hangye) + "]\n"
             content += "我要求你做结构化输出,你的输出必须是json格式,有两个字段name,industry\n,除json外禁止包含其他任何字符\n"
-            content += "输出: 纯文本输出,除了json结构体之外禁止包含其他任何字符,禁止包含任务markdown语言\n"
+            content += "输出: 纯文本输出,除了json结构体之外禁止包含其他任何字符,禁止包含任何markdown语言\n"
             content += "json结构体中的name,industry字段的值禁止包含任何符号,只保留纯文本\n"
 
             # 构建API请求的数据
