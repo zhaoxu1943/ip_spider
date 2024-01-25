@@ -1,0 +1,3 @@
+{"minip": "16777472", "maxip": "16777727", "owner": "中国电信", "isp": "中国电信", "asnumber": "", "asn_code": "", "asn_description": ""}
+{"minip": "16778240", "maxip": "16779263", "owner": "Gtelecom Pty Ltd", "isp": "Wirefreebroadband Pty Ltd", "asnumber": "38803", "asn_code": "AS38803", "asn_description": "WPL-AS-AP Wirefreebroadband Pty Ltd, AU"}
+{"minip": "16785408", "maxip": "16785663", "owner": "中国电信", "isp": "QUANTUM DATA COMMUNICATIONS, INC.", "asnumber": "141748", "asn_code": "AS141748", "asn_description": "QDCI-AS-AP QUANTUM DATA COMMUNICATIONS, INC., PH"}

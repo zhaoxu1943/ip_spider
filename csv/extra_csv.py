@@ -1,6 +1,23 @@
+import csv
 import json
 
-import pandas as pd
+asn_obj_map = {}
+asn_list = []
+
+
+class ASN:
+    def __init__(self, name, count, sum):
+        self.name = name
+        self.count = count
+        self.sum = sum
+
+    def __eq__(self, other):
+        if isinstance(other, ASN):
+            return self.name == other.name
+        return False
+
+    def __hash__(self):
+        return hash(self.name)
 
 
 def test():
@@ -8,32 +25,30 @@ def test():
     with open('/home/ip_asn.txt', 'r', encoding="UTF-8") as file:
         data = file.readlines()
 
-    # Count the occurrences of each asn_description
-    asn_description_counts = {}
     for line in data:
         json_data = json.loads(line)
         asn_description = json_data.get('asn_description')
-        if asn_description:
-            if asn_description in asn_description_counts:
-                asn_description_counts[asn_description] += 1
-            else:
-                asn_description_counts[asn_description] = 1
+        if asn_description in asn_obj_map:
+            temp_asn_obj = asn_obj_map.get(asn_description)
+            temp_asn_obj.count += 1
+            temp_sum = int(json_data.get('maxip')) - int(json_data.get('minip'))
+            temp_asn_obj.sum += temp_sum
+        else:
+            temp_sum = int(json_data.get('maxip')) - int(json_data.get('minip'))
+            temp_asn_obj = ASN(asn_description, 1, temp_sum)
+            asn_obj_map[asn_description] = temp_asn_obj
 
-    # Create lists for the columns of the DataFrame
-    unique_asn_descriptions = list(asn_description_counts.keys())
-    counts = list(asn_description_counts.values())
+    for asn_obj in asn_obj_map.values():
+        asn_list.append(asn_obj)
 
-    # Create DataFrame with columns 'asn_description' and 'count'
-    output_df = pd.DataFrame({'asn_description': unique_asn_descriptions, 'count': counts})
+    asn_list.sort(key=lambda x: x.count, reverse=True)
 
-    # Sort DataFrame by 'count' column in descending order
-    output_df = output_df.sort_values(by='count', ascending=False)
-
-    # Add 'order' column with sequential numbers
-    output_df.insert(0, 'order', range(1, len(output_df) + 1))
-
-    # Save DataFrame to a CSV file
-    output_df.to_csv('output.csv', index=False)
+    filename = '/home/output_2.csv'
+    with open(filename, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Name', 'Count', 'Sum'])
+        for asn_obj in asn_list:
+            writer.writerow([asn_obj.name, asn_obj.count, asn_obj.sum])
 
 
 if __name__ == '__main__':
