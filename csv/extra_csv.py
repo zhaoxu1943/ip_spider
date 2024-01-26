@@ -16,8 +16,15 @@ class ASN:
             return self.name == other.name
         return False
 
+    # why hash code is needed?
+    # when using hash map or hash set, we need to override hash code and equals method
+    # because hash map or hash set use hash code to determine which bucket to put the object
+    # and use equals method to determine whether the object is already in the bucket
     def __hash__(self):
         return hash(self.name)
+
+    def __str__(self):
+        return self.name + " " + str(self.count) + " " + str(self.sum)
 
 
 def test():
